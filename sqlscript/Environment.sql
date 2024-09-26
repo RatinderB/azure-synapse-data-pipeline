@@ -6,20 +6,20 @@ CREATE SCHEMA [error];
 
 
 -- Create a Master Key
-CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'z#66u$G6bT';
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = '<Password123>';
 
 -- Create Database Scoped Credential using SAS Token
 CREATE DATABASE SCOPED CREDENTIAL ADLSCredential
 WITH
     IDENTITY = 'SHARED ACCESS SIGNATURE',
-    SECRET = 'sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2024-09-23T06:02:02Z&st=2024-09-22T22:02:02Z&spr=https&sig=GrODlYJ%2Bcj0dyCMEysJBi96gTTBjELAOgVvDLLtqrUk%3D';
+    SECRET = '<SAS TOKEN HERE>';
 
 
 -- Create External Data Source
 CREATE EXTERNAL DATA SOURCE [ADLSDataSource]
 WITH (
     TYPE = HADOOP,
-    LOCATION = 'abfss://project-data@synapseds.dfs.core.windows.net/',
+    LOCATION = 'abfss://<container>@<storage-account>.dfs.core.windows.net/',
     CREDENTIAL = ADLSCredential
 );
 
