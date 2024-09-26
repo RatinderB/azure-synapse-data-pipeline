@@ -48,5 +48,5 @@ Adopted the **Medallion Architecture**, structuring the pipeline into three dist
 
 **Ratinder Bhullar**  
 Data Engineer  
-[LinkedIn Profile(https://www.linkedin.com/in/ratinder-bhullar/)] 
+[LinkedIn Profile](https://www.linkedin.com/in/ratinder-bhullar/)
 [Email](mailto:ratinder.bhullar1@gmail.com)
