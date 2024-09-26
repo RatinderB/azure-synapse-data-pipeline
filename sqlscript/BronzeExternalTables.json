@@ -1,0 +1,20 @@
+{
+	"name": "BronzeExternalTables",
+	"properties": {
+		"folder": {
+			"name": "ProjectScripts"
+		},
+		"content": {
+			"query": "-- Create External Table in Bronze Schema for Customers\nCREATE EXTERNAL TABLE [bronze].[Customers] (\n    [CustomerID] NVARCHAR(400),\n    [Name] NVARCHAR(400),\n    [Email] NVARCHAR(400),\n    [Phone] NVARCHAR(400),\n    [Address] NVARCHAR(400)\n)\nWITH (\n    LOCATION = '/raw/customers.csv',\n    DATA_SOURCE = [ADLSDataSource],\n    FILE_FORMAT = [CSVFileFormat]\n);\n\n-- Create External Table in Bronze Schema for Products\n\nCREATE EXTERNAL TABLE [bronze].[Products] (\n    [ProductID] NVARCHAR(50),\n    [Category] NVARCHAR(50),\n    [ProductName] NVARCHAR(100),\n    [Price] DECIMAL(18,2),\n    [StockQuantity] FLOAT\n)\nWITH (\n    LOCATION = 'raw/products.csv',\n    DATA_SOURCE = [ADLSDataSource],\n    FILE_FORMAT = [CSVFileFormat]\n);\n\n-- Create External Table in Bronze Schema for Orders\nCREATE EXTERNAL TABLE [bronze].[Orders] (\n    [OrderID] NVARCHAR(50),\n    [CustomerID] NVARCHAR(50),\n    [OrderDate] DATE,\n    [TotalAmount] DECIMAL(18,2)\n)\nWITH (\n    LOCATION = 'raw/orders.csv',\n    DATA_SOURCE = [ADLSDataSource],\n    FILE_FORMAT = [CSVFileFormat]\n);\n\n-- Create External Table in Bronze Schema for Order Items\nCREATE EXTERNAL TABLE [bronze].[OrderItems] (\n    [OrderItemID] NVARCHAR(50),\n    [OrderID] NVARCHAR(50),\n    [ProductID] NVARCHAR(50),\n    [Quantity] FLOAT,\n    [UnitPrice] DECIMAL(18,2)\n)\nWITH (\n    LOCATION = 'raw/order_items.csv',\n    DATA_SOURCE = [ADLSDataSource],\n    FILE_FORMAT = [CSVFileFormat]\n);\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) *\n FROM [gold].[SalesSummaryByProduct]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

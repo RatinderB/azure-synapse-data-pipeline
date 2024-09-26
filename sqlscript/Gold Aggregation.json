@@ -1,0 +1,20 @@
+{
+	"name": "Gold Aggregation",
+	"properties": {
+		"folder": {
+			"name": "ProjectScripts"
+		},
+		"content": {
+			"query": "CREATE VIEW [gold].[vw_SalesSummary] AS\nSELECT\n    p.Category,\n    p.ProductName,\n    SUM(oi.Quantity) AS TotalQuantitySold,\n    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount\nFROM [silver].[OrderItems] oi\nINNER JOIN [silver].[Products] p ON oi.ProductID = p.ProductID\nGROUP BY\n    p.Category,\n    p.ProductName;\n\n-- Identify the total sales and quantity sold for each product.\nCREATE VIEW [gold].[vw_TotalSalesPerProduct] AS\nSELECT\n    p.ProductID,\n    p.ProductName,\n    p.Category,\n    SUM(oi.Quantity) AS TotalQuantitySold,\n    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount\nFROM [silver].[OrderItems] oi\nINNER JOIN [silver].[Products] p ON oi.ProductID = p.ProductID\nGROUP BY\n    p.ProductID,\n    p.ProductName,\n    p.Category;\n\n\n-- Top spending customers\nCREATE VIEW [gold].[vw_TopCustomersBySpend] AS\nSELECT TOP 10\n    c.CustomerID,\n    c.Name AS CustomerName,\n    c.Email,\n    SUM(oi.Quantity * oi.UnitPrice) AS TotalSpent,\n    COUNT(DISTINCT o.OrderID) AS OrderCount\nFROM [silver].[Customers] c\nINNER JOIN [silver].[Orders] o ON c.CustomerID = o.CustomerID\nINNER JOIN [silver].[OrderItems] oi ON o.OrderID = oi.OrderID\nGROUP BY\n    c.CustomerID,\n    c.Name,\n    c.Email\nORDER BY\n    TotalSpent DESC;\n\n-- Avg order value for each customer\nCREATE VIEW [gold].[vw_AverageOrderValueByCustomer] AS\nSELECT\n    c.CustomerID,\n    c.Name AS CustomerName,\n    AVG(o.TotalAmount) AS AverageOrderValue,\n    COUNT(DISTINCT o.OrderID) AS OrderCount\nFROM [silver].[Customers] c\nINNER JOIN [silver].[Orders] o ON c.CustomerID = o.CustomerID\nGROUP BY\n    c.CustomerID,\n    c.Name;\n\n\n-- Create the SalesSummaryByProduct table\nCREATE TABLE [gold].[SalesSummaryByProduct] (\n    ProductID NVARCHAR(50) NOT NULL,\n    ProductName NVARCHAR(100),\n    Category NVARCHAR(50),\n    Year INT,\n    Month INT,\n    TotalQuantitySold INT,\n    TotalSalesAmount DECIMAL(18,2)\n)\nWITH (\n    DISTRIBUTION = HASH(ProductID),\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n-- Populate the SalesSummaryByProduct table\nINSERT INTO [gold].[SalesSummaryByProduct] (ProductID, ProductName, Category, Year, Month, TotalQuantitySold, TotalSalesAmount)\nSELECT\n    p.ProductID,\n    p.ProductName,\n    p.Category,\n    YEAR(o.OrderDate) AS Year,\n    MONTH(o.OrderDate) AS Month,\n    SUM(oi.Quantity) AS TotalQuantitySold,\n    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount\nFROM [silver].[OrderItems] oi\nINNER JOIN [silver].[Orders] o ON oi.OrderID = o.OrderID\nINNER JOIN [silver].[Products] p ON oi.ProductID = p.ProductID\nGROUP BY\n    p.ProductID,\n    p.ProductName,\n    p.Category,\n    YEAR(o.OrderDate),\n    MONTH(o.OrderDate);\n\n\n-- Create the CategorySalesPerformance table\nCREATE TABLE [gold].[CategorySalesPerformance] (\n    Category NVARCHAR(50),\n    Year INT,\n    Month INT,\n    TotalQuantitySold INT,\n    TotalSalesAmount DECIMAL(18,2)\n)\nWITH (\n    DISTRIBUTION = ROUND_ROBIN,\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n-- Populate the CategorySalesPerformance table\nINSERT INTO [gold].[CategorySalesPerformance] (Category, Year, Month, TotalQuantitySold, TotalSalesAmount)\nSELECT\n    p.Category,\n    YEAR(o.OrderDate) AS Year,\n    MONTH(o.OrderDate) AS Month,\n    SUM(oi.Quantity) AS TotalQuantitySold,\n    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount\nFROM [silver].[OrderItems] oi\nINNER JOIN [silver].[Orders] o ON oi.OrderID = o.OrderID\nINNER JOIN [silver].[Products] p ON oi.ProductID = p.ProductID\nGROUP BY\n    p.Category,\n    YEAR(o.OrderDate),\n    MONTH(o.OrderDate);\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

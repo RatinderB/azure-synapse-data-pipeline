@@ -1,0 +1,20 @@
+{
+	"name": "Error Tables",
+	"properties": {
+		"folder": {
+			"name": "ProjectScripts"
+		},
+		"content": {
+			"query": "-- Create Error Table for Customers\nCREATE TABLE [error].[Customers_Error] (\n    [CustomerID] NVARCHAR(50),\n    [Name] NVARCHAR(100),\n    [Email] NVARCHAR(100),\n    [Phone] NVARCHAR(50),\n    [Address] NVARCHAR(250),\n    [ErrorMessage] NVARCHAR(4000),\n    [ErrorDateTime] DATETIME\n)\nWITH (\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n);\n\n-- Create Error Table for Products\nCREATE TABLE [error].[Products_Error] (\n    [ProductID] NVARCHAR(50),\n    [ProductName] NVARCHAR(100),\n    [Category] NVARCHAR(50),\n    [Price] DECIMAL(18,2),\n    [StockQuantity] INT,\n    [ErrorMessage] NVARCHAR(4000),\n    [ErrorDateTime] DATETIME\n)\nWITH (\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n);\n\n-- Create Error Table for Orders\nCREATE TABLE [error].[Orders_Error] (\n    [OrderID] NVARCHAR(50),\n    [CustomerID] NVARCHAR(50),\n    [OrderDate] DATE,\n    [TotalAmount] DECIMAL(18,2),\n    [ErrorMessage] NVARCHAR(4000),\n    [ErrorDateTime] DATETIME\n)\nWITH (\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n);\n\n-- Create Error Table for OrderItems\nCREATE TABLE [error].[OrderItems_Error] (\n    [OrderItemID] NVARCHAR(50),\n    [OrderID] NVARCHAR(50),\n    [ProductID] NVARCHAR(50),\n    [Quantity] INT,\n    [UnitPrice] DECIMAL(18,2),\n    [ErrorMessage] NVARCHAR(4000),\n    [ErrorDateTime] DATETIME\n)\nWITH (\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n);\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

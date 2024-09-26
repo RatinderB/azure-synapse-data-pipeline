@@ -1,0 +1,20 @@
+{
+	"name": "Environment",
+	"properties": {
+		"folder": {
+			"name": "ProjectScripts"
+		},
+		"content": {
+			"query": "-- Create Schema for Medallion Architecture\nCREATE SCHEMA [bronze];\nCREATE SCHEMA [silver];\nCREATE SCHEMA [gold];\nCREATE SCHEMA [error];\n\n\n-- Create a Master Key\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'z#66u$G6bT';\n\n-- Create Database Scoped Credential using SAS Token\nCREATE DATABASE SCOPED CREDENTIAL ADLSCredential\nWITH\n    IDENTITY = 'SHARED ACCESS SIGNATURE',\n    SECRET = 'sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2024-09-23T06:02:02Z&st=2024-09-22T22:02:02Z&spr=https&sig=GrODlYJ%2Bcj0dyCMEysJBi96gTTBjELAOgVvDLLtqrUk%3D';\n\n\n-- Create External Data Source\nCREATE EXTERNAL DATA SOURCE [ADLSDataSource]\nWITH (\n    TYPE = HADOOP,\n    LOCATION = 'abfss://project-data@synapseds.dfs.core.windows.net/',\n    CREDENTIAL = ADLSCredential\n);\n\n-- Create External File Format\n\nCREATE EXTERNAL FILE FORMAT [CSVFileFormat]\nWITH (\n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2,  -- Skip header row\n        ENCODING = 'UTF8'\n    )\n);\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"name": "SilverLayer",
+	"properties": {
+		"folder": {
+			"name": "ProjectScripts"
+		},
+		"content": {
+			"query": "-- Create Customers Table in Silver Schema\nCREATE TABLE [silver].[Customers] (\n    [CustomerID] NVARCHAR(50) NOT NULL,\n    [Name] NVARCHAR(100),\n    [Email] NVARCHAR(100),\n    [Phone] NVARCHAR(50),\n    [Address] NVARCHAR(250)\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED INDEX ([CustomerID])\n);\n\n\n-- Create Products Table in Silver Schema\nCREATE TABLE [silver].[Products] (\n    [ProductID] NVARCHAR(50) NOT NULL,\n    [Category] NVARCHAR(50),\n    [ProductName] NVARCHAR(100),\n    [Price] DECIMAL(18,2),\n    [StockQuantity] INT\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED INDEX ([ProductID])\n);\n\n\n\n-- Create Orders Table in Silver Schema\nCREATE TABLE [silver].[Orders] (\n    [OrderID] NVARCHAR(50) NOT NULL,\n    [CustomerID] NVARCHAR(50),\n    [OrderDate] DATE,\n    [TotalAmount] DECIMAL(18,2)\n)\nWITH (\n    DISTRIBUTION = HASH([CustomerID]),\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n\n-- Create OrderItems Table in Silver Schema\nCREATE TABLE [silver].[OrderItems] (\n    [OrderItemID] NVARCHAR(50) NOT NULL,\n    [OrderID] NVARCHAR(50),\n    [ProductID] NVARCHAR(50),\n    [Quantity] INT,\n    [UnitPrice] DECIMAL(18,2)\n)\nWITH (\n    DISTRIBUTION = HASH([OrderID]), \n    CLUSTERED COLUMNSTORE INDEX\n);\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DEPipelineDB",
+				"poolName": "DEPipelineDB"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
